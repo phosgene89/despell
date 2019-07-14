@@ -1,1 +1,1 @@
-# despell
+This package is in development. Currently it only reliably corrupts alphabetic characters.
