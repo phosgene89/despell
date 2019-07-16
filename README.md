@@ -24,16 +24,16 @@ Input:
     
 Output:
     
-    our minds are compute4s madee of meat. - marvin misnky
-    our minds are computers made of meat. - marvin minsky
-    our minds are computers made of meeat. - marvin minsky
-    our minnds are computers made of meat. - marvin minsky
-    our minsd are computers made of meat. - marvij minsky
-    our minds are computrrs madde of meat. - marvin minsky
-    our minds are computers made of emat. - marvin minsky
-    ourm inds are komputers made of meat. - marvin minsky
-    our minds qre cmooputers made of meeat. - marvin minsky
-    our minds are vomputers made of meat.  -marvin minsky
+    Our mminds are compiters madeo f meat. - Marvin Minsky
+    Our minds are computers made of meta. - Mqrvin Minskt
+    Our minds are computerss mdae of meat.  - Marvin Minscy
+    Oru minds are computers made of meat. - Marvin Minsky
+    Our minds arw kompuetra made of meat. - Marvin Minsky
+    Our minds are co,putere  ade of meta. - Marvin Minsky
+    Our minds are computers maade of emat. - Marvin Minsky
+    Our minds are computers made of maet. - Ma4vin Minsk
+    Our minds are computers made of mea. - Marvin Minky
+    Our mynds are computesr made of meat. - Marvin Minsky
 
 #### Requirements
 Python 3, numpy
