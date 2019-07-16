@@ -15,13 +15,29 @@ class weights:
         
 def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
     
+    """
+    Introduces substitution errors, deletion errors, doubling errors and transposition 
+    errors into a text string.
+    
+    Args:
+        text (str): Input string to introduce spelling errors into.
+        error_rate (float, optional): Average number of errors per character in text. 
+            Higher values result in more errors. Must be less than 1.
+        weight_ratios (list, optional): A list giving the ratios of spelling errors 
+            to introduce. The ratios are in the form [spatial, phonetic, double, 
+            delete, transpose]. 
+            
+    Returns:
+        The original text string with introduced typing errors.
+    """
+    
     scaled_weights = weights(weight_ratios)
     
     text = text.lower()
     text = list(text)
     num_chars = len(text)
     
-    errors = np.floor(error_rate*num_chars)
+    errors = int(np.floor(error_rate*num_chars))
     
     if num_chars<errors:
         
@@ -44,6 +60,19 @@ def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
 
 def corrupt_char(char, scaled_weights):
     
+    """
+    Takes in a string character and introduces an error.
+    
+    Args:
+        char (str): A single string character.
+        scaled_weights (object): A weights object containing the probabilities
+            of different errors.
+            
+    Returns:
+        A string character that has been replaced with various kinds of 
+        typing errors.
+    """
+    
     if np.random.uniform()<scaled_weights.w1:
 
             char = spatial_replace(char)
@@ -64,6 +93,10 @@ def corrupt_char(char, scaled_weights):
             
 def spatial_replace(char):
     
+    """
+    Replaces a character with a nearby character.
+    """
+    
     idx = np.random.randint(len(qwerty_replace_dict[char]))
     char = qwerty_replace_dict[char][idx]
             
@@ -72,8 +105,7 @@ def spatial_replace(char):
 def phonetic_transform(char):
     
     """
-    Consider using a neural net to do this as creating manual
-    rules is pretty tedious and crap.
+    Replaces a character with phonetically similar characters.
     """
     
     try:
@@ -86,6 +118,10 @@ def phonetic_transform(char):
     return char  
 
 def transpose(text):
+    
+    """
+    Introduces a random character transposition into a text string.
+    """
     
     text_len = len(text)
     
