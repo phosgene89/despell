@@ -33,7 +33,6 @@ def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
     
     scaled_weights = weights(weight_ratios)
     
-    text = text.lower()
     text = list(text)
     num_chars = len(text)
     
@@ -97,8 +96,8 @@ def spatial_replace(char):
     Replaces a character with a nearby character.
     """
     
-    idx = np.random.randint(len(qwerty_replace_dict[char]))
-    char = qwerty_replace_dict[char][idx]
+    idx = np.random.randint(len(qwerty_replace_dict[char.lower()]))
+    char = qwerty_replace_dict[char.lower()][idx]
             
     return char
 
@@ -109,8 +108,8 @@ def phonetic_transform(char):
     """
     
     try:
-        idx = np.random.randint(len(phonetic_replace_dict[char]))
-        char = phonetic_replace_dict[char][idx]
+        idx = np.random.randint(len(phonetic_replace_dict[char.lower()]))
+        char = phonetic_replace_dict[char.lower()][idx]
         
     except:
         return char
