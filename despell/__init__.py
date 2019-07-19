@@ -1,2 +1,2 @@
 name = "despell"
-from despell.py import *
+from despell import *
