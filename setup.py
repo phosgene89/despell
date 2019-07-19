@@ -2,13 +2,13 @@ from distutils.core import setup
 setup(
   name = 'despell',        
   packages = ['despell'],   
-  version = '0.2.3',      
+  version = '0.2.4',      
   license='MIT',        
   description = 'TYPE YOUR DESCRIPTION HERE',
   author = 'Greg Feldmann',                  
   author_email = 'felga001@mymail.unisa.edu.au',      # Type in your E-Mail
   url = 'https://github.com/phosgene89/despell',  
-  download_url = 'https://github.com/phosgene89/despell/archive/v0.2.3.tar.gz',   
+  download_url = 'https://github.com/phosgene89/despell/archive/v0.2.4.tar.gz',   
   keywords = ['spelling', 'typo'],   # Keywords that define your package best
   install_requires=['numpy'],
   classifiers=[
