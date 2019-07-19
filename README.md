@@ -17,7 +17,7 @@ While this is not comprehensive, the results of Damerau [1] and Pollock & Zamora
 
 Input:
 
-    from despell import corrupt_text
+    from despell.despell import corrupt_text
     text = "Our minds are computers made of meat. - Marvin Minsky"
     
     for i in range(10):
