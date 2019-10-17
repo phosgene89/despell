@@ -95,42 +95,61 @@ class weights:
     
     def __init__(self,weights):
         
-        self.w_sum = np.sum(weights)
-        self.w1 = weights[0]/self.w_sum
-        self.w2 = (weights[1]+weights[0])/self.w_sum
-        self.w3 = (weights[2]+weights[1])/self.w_sum
-        self.w4 = (weights[3]+weights[2])/self.w_sum
+        assert type(weights) == list
         
-def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
+        for i in range(len(weights)):
+            assert (type(weights[i]) == float) or (type(weights[i]) == int)
+        
+        self.w_sum = np.sum(weights)
+        self.w1 = weights[0] / self.w_sum
+        self.w2 = (weights[1] + weights[0]) / self.w_sum
+        self.w3 = (weights[2] + weights[1]) / self.w_sum
+        self.w4 = (weights[3] + weights[2]) / self.w_sum
+        self.w5 = (weights[4] + weights[3]) / self.w_sum
+        
+def corrupt_text(text, error_rate = 1/30, weight_ratios = [1,1,1,1,1]):
     
     """
-    Introduces substitution errors, deletion errors, doubling errors and transposition 
-    errors into a text string.
+    Overview
+    --------
+    Introduces errors into a string.
     
-    Args:
-        text (str): Input string to introduce spelling errors into.
-        error_rate (float, optional): Average number of errors per character in text. 
-            Higher values result in more errors. Must be less than 1.
-        weight_ratios (list, optional): A list giving the ratios of spelling errors 
-            to introduce. The ratios are in the form [spatial, phonetic, double, 
-            delete, transpose]. 
-            
-    Returns:
-        The original text string with introduced typing errors.
+    
+    Inputs
+    ------
+    text (str): A text string.
+    error_rate (float): Rate at which errors are introduced,
+        measured in errors per character.
+    weight_ratios (list): List of floats determining the likelihood
+        ratio of different types of errors.
+        
+        
+    Returns
+    -------
+    
     """
+    
+    assert type(text) == str
+    assert type(error_rate) == float
+    assert type(weight_ratios) == list
+    
+    for i in range( len(weight_ratios) ):
+        assert ( type(weight_ratios[i]) == float ) or ( type(weight_ratios[i]) == int )
+
     
     scaled_weights = weights(weight_ratios)
     
+    text = text.lower()
     text = list(text)
     num_chars = len(text)
     
-    errors = int(np.floor(error_rate*num_chars))
-    
-    if num_chars<errors:
+    errors = int( np.ceil( error_rate*num_chars ) )
+
+    if num_chars < errors:
         
         raise Exception("Number of errors exceeds number of characters")
     
-    idx = list(range(num_chars))
+    idx = list( range(num_chars) )
     random.shuffle(idx)
     
     error_indices = idx[0:errors]
@@ -139,7 +158,7 @@ def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
         
         text[i] = corrupt_char(text[i], scaled_weights)
         
-    if np.random.uniform()>scaled_weights.w4:
+    if np.random.uniform() > scaled_weights.w4:
         
         text = transpose(text)
         
@@ -148,56 +167,98 @@ def corrupt_text(text, error_rate=0.2, weight_ratios= [1,1,1,1]):
 def corrupt_char(char, scaled_weights):
     
     """
-    Takes in a string character and introduces an error.
+    Overview
+    --------
+    Replaces a character with an erroneous character.
     
-    Args:
-        char (str): A single string character.
-        scaled_weights (object): A weights object containing the probabilities
-            of different errors.
-            
-    Returns:
-        A string character that has been replaced with various kinds of 
-        typing errors.
+    
+    Inputs
+    ------
+    char (str): A character.
+    scaled_weights (object): Object containing weights that determine
+        the likelihood of particular types of error.
+        
+    
+    Returns
+    -------
+    char (str): Erroneous character replacement.
     """
     
-    if np.random.uniform()<scaled_weights.w1:
+    assert type(char) == str
+    
+    
+    if np.random.uniform() < scaled_weights.w1:
 
             char = spatial_replace(char)
         
-    elif np.random.uniform()<scaled_weights.w2:
+    elif np.random.uniform() < scaled_weights.w2:
         
             char = phonetic_transform(char)
             
-    elif np.random.uniform()<scaled_weights.w3:
+    elif np.random.uniform() < scaled_weights.w3:
             
             char = char*2
         
-    elif np.random.uniform()<scaled_weights.w4:
+    elif np.random.uniform() < scaled_weights.w4:
 
             char = ''
+            
+    elif np.random.uniform() < scaled_weights.w5:
+        
+        char = insertion(char)
             
     return char
             
 def spatial_replace(char):
     
     """
-    Replaces a character with a nearby character.
+    Overview
+    --------
+    Replaces chars with chars nearby on keyboard.
     """
     
-    idx = np.random.randint(len(qwerty_replace_dict[char.lower()]))
-    char = qwerty_replace_dict[char.lower()][idx]
+    assert type(char) == str
+    
+    
+    idx = np.random.randint( len( qwerty_replace_dict[char] ) )
+    char = qwerty_replace_dict[char][idx]
             
+    return char
+
+def insertion(char):
+    
+    """
+    Overview
+    --------
+    Adds a nearby character to the left or right of input char.
+    """
+    
+    assert type(char) == str
+    
+    
+    idx = np.random.randint( len( qwerty_replace_dict[char] ) )
+    
+    if np.random.uniform() < 0.5:
+        char += qwerty_replace_dict[char][idx]
+        
+    else:
+        char = qwerty_replace_dict[char][idx] + char
+        
     return char
 
 def phonetic_transform(char):
     
     """
-    Replaces a character with phonetically similar characters.
+    Consider using a neural net to do this as creating manual
+    rules is pretty tedious and crap.
     """
     
+    assert type(char) == str
+    
+    
     try:
-        idx = np.random.randint(len(phonetic_replace_dict[char.lower()]))
-        char = phonetic_replace_dict[char.lower()][idx]
+        idx = np.random.randint( len( phonetic_replace_dict[char] ) )
+        char = phonetic_replace_dict[char][idx]
         
     except:
         return char
@@ -207,8 +268,16 @@ def phonetic_transform(char):
 def transpose(text):
     
     """
-    Introduces a random character transposition into a text string.
+    Overview
+    --------
+    Swaps two adjacent characters.
     """
+    
+    assert type(text) == list
+    
+    
+    for i in range(len(text)):
+        assert type(text[i]) == str
     
     text_len = len(text)
     
