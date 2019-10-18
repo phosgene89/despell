@@ -274,7 +274,7 @@ def transpose(text):
     """
     
     assert type(text) == list
-    assert len(text) > 0
+    assert len(text) > 1
     
     
     for i in range(len(text)):
