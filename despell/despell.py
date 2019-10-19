@@ -95,10 +95,19 @@ class weights:
     
     def __init__(self,weights):
         
-        assert type(weights) == list
+        if type(weights) != list:
+            raise TypeError("Input weight values not list type.")
+
+        if np.sum(weights) <= 0:
+            raise ValueError("Sum of input weights is less than or equal to 0.")
         
-        for i in range(len(weights)):
-            assert (type(weights[i]) == float) or (type(weights[i]) == int)
+        for weight_val in weights:
+
+            if (type(weight_val) != float) and (type(weight_val) != int):
+                raise TypeError("Element of weights not numeric.")
+
+            if weight_val < 0:
+                raise ValueError("weight_val must be positive.")
         
         self.w_sum = np.sum(weights)
         self.w1 = weights[0] / self.w_sum
@@ -107,7 +116,7 @@ class weights:
         self.w4 = (weights[3] + weights[2]) / self.w_sum
         self.w5 = (weights[4] + weights[3]) / self.w_sum
         
-def corrupt_text(text, error_rate = 1/30, weight_ratios = [1,1,1,1,1]):
+def corrupt_text(text, error_rate = 1/10, weight_ratios = [1,1,1,1,1]):
     
     """
     Overview
@@ -126,15 +135,33 @@ def corrupt_text(text, error_rate = 1/30, weight_ratios = [1,1,1,1,1]):
         
     Returns
     -------
-    
+    Input string with introduced spelling errors.
     """
     
-    assert type(text) == str
-    assert type(error_rate) == float
-    assert type(weight_ratios) == list
-    
-    for i in range( len(weight_ratios) ):
-        assert ( type(weight_ratios[i]) == float ) or ( type(weight_ratios[i]) == int )
+    if type(text) != str:
+        raise TypeError("Input text is not str type.")
+
+    if type(error_rate) != float:
+        raise TypeError("error_rate is not numeric.")
+
+    if error_rate <= 0:
+        raise ValueError("error_rate not positive.")
+
+    if type(weight_ratios) != list:
+        raise TypeError("weight_ratios is not list type.")
+
+    if np.sum(weight_ratios) <= 0:
+        raise ValueError("Sum of weight_ratios must be greater than 0.")
+        
+    for weight_ratio in weight_ratios:
+
+        if (type(weight_ratio) != float) and (type(weight_ratio) != int):
+            raise TypeError("Element of weight_ratios not numeric.")
+
+        if weight_ratio < 0:
+            raise ValueError("Element of weight_ratios less than 0.")
+
+    is_ascii(char)
 
     
     scaled_weights = weights(weight_ratios)
@@ -184,27 +211,24 @@ def corrupt_char(char, scaled_weights):
     char (str): Erroneous character replacement.
     """
     
-    assert type(char) == str
-    
+    if type(char) != str:
+        raise TypeError("Input is not str type")
+
+    is_ascii(char)
     
     if np.random.uniform() < scaled_weights.w1:
-
             char = spatial_replace(char)
         
     elif np.random.uniform() < scaled_weights.w2:
-        
             char = phonetic_transform(char)
             
     elif np.random.uniform() < scaled_weights.w3:
-            
             char = char*2
         
     elif np.random.uniform() < scaled_weights.w4:
-
             char = ''
             
     elif np.random.uniform() < scaled_weights.w5:
-        
         char = insertion(char)
             
     return char
@@ -217,8 +241,10 @@ def spatial_replace(char):
     Replaces chars with chars nearby on keyboard.
     """
     
-    assert type(char) == str
-    
+    if type(char) != str:
+        raise TypeError("Input is not str type")
+
+    is_ascii(char)
     
     idx = np.random.randint( len( qwerty_replace_dict[char] ) )
     char = qwerty_replace_dict[char][idx]
@@ -233,8 +259,10 @@ def insertion(char):
     Adds a nearby character to the left or right of input char.
     """
     
-    assert type(char) == str
-    
+    if type(char) != str:
+        raise TypeError("Input is not str type")
+
+    is_ascii(char)
     
     idx = np.random.randint( len( qwerty_replace_dict[char] ) )
     
@@ -253,7 +281,10 @@ def phonetic_transform(char):
     rules is pretty tedious and crap.
     """
     
-    assert type(char) == str
+    if type(char) != str:
+        raise TypeError("Input is not str type")
+
+    is_ascii(char)
     
     
     try:
@@ -273,12 +304,18 @@ def transpose(text):
     Swaps two adjacent characters.
     """
     
-    assert type(text) == list
-    assert len(text) > 1
+    if type(text) != list:
+        raise TypeError("Input text is not list type.")
+
+    if len(text) <= 1:
+        raise ValueError("Length of input text must be greater than 1.")
     
-    
-    for i in range(len(text)):
-        assert type(text[i]) == str
+    for char in text:
+
+        if type(char) != str:
+            raise TypeError("Input is not str type")
+
+        is_ascii(char)
     
     text_len = len(text)
     
@@ -289,3 +326,20 @@ def transpose(text):
     text[idx-1] = swap
     
     return text
+
+def is_ascii(input_string):
+
+    for char in input_string:
+        if 0 <= ord(char) <= 127:
+            return
+        else:
+            raise ValueError("Input contains non-ASCII characters.")
+
+
+def is_ascii(input_string):
+
+    for char in input_string:
+        if 0 <= ord(char) <= 127:
+            return
+        else:
+            raise ValueError().with_traceback(char)

@@ -39,6 +39,13 @@ class TestCorruptText(unittest.TestCase):
         for i in range(len(test_input)):
             self.assertTrue(type(ds.transpose(test_input)[i])==str)
 
+    def test_assert_is_str_phonetic_transform(self):
+
+        test_input = 3
+
+        with self.assertRaises(AssertionError):
+            ds.phonetic_transform(test_input)
+
 if __name__ == '__main__':
 
     unittest.main()
